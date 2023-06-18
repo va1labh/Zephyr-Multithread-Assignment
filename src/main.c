@@ -34,7 +34,7 @@ void thread2(void)
     k_msgq_init(&msgq, buffer, sizeof(buffer), 1);
     while (1) {
         k_msgq_get(&msgq, &interval, K_FOREVER); //read incoming message drom thread1
-	//k_msleep(1000); // to wait 1s after thread1
+	k_msleep(1000); // to wait 1s after thread1
         printk("thread 2\n");
     }
 }
