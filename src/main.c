@@ -4,38 +4,43 @@
 #define THREAD1_PRIORITY 5
 #define THREAD2_PRIORITY 6
 
-struct k_msgq msgq; 
+struct k_msgq msgq;  
+K_MSGQ_DEFINE(msgq, sizeof(bool), 1, 1); //defining a message queue
 
-int interval=1000; // Initial interval of 1s
+#define min_delay 1000 
 
 void thread1(void)
-{
-    int count = 0;
+{   int interval = min_delay; // Initial interval of 1s
+    bool msg=false; 
+    k_msleep(1000);
     while (1)
     {
-        k_msleep(1000); //thread1 sleeps for 1 sec
         printk("thread 1\n");
-        if (++count >= 10) //condition to check the overflow
+        msg=1; //set msg to true after printing
+        k_msgq_put(&msgq, &msg, K_NO_WAIT); //send message to thread2
+        if (interval >= 10000) //condition to check the overflow
         {
-            count = 1;
-            interval = 1000; // Reset interval to 1 second
+            interval=min_delay; //reset the interval to 1s
         }
         else
         {
             interval += 1000; // Increment interval by 1 second
         }
-        k_msgq_put(&msgq, &interval, K_FOREVER); //send message to thread2 
+        k_msleep(interval); //delay for next execution
     }
 }
 
 void thread2(void)
 {
-    char buffer[10];
-    k_msgq_init(&msgq, buffer, sizeof(buffer), 1);
+    bool recv_msg;
     while (1) {
-        k_msgq_get(&msgq, &interval, K_FOREVER); //read incoming message drom thread1
-	k_msleep(1000); // to wait 1s after thread1
+        k_msgq_get(&msgq, &recv_msg, K_FOREVER); //read incoming message drom thread1
+	    if(recv_msg)
+        {
+        k_msleep(1000); // to wait 1s after thread1
         printk("thread 2\n");
+        printk("\n"); //to separate the print statements
+        }
     }
 }
 
