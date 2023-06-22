@@ -12,31 +12,31 @@ The python environment is activated before building.
 ```
 // Define thread stack size, priorities and message queue
 //set initial interval
-interval = 1 second
+min_delay = 1 second
 
 // Thread 1 function
 function thread1():
-    count=0
+    interval=min_delay
+    msg=false
+    sleep for 1s to start the thread after 1s
     while True:
-        sleep(interval)
         print "thread 1"
+        set msg=true and send message to thread2
         //to increment count and reset interval if overflow
-        if count >= 10 seconds:
-            count=1
+        if interval >= 10 seconds:
             interval=1 second
         else:
             interval+=1 sec
-
-        // Send message to thread 2
-        message = interval
+        sleep(interval) //delay for next execution
+        
 
 // Thread 2 function
 function thread2():
-//initialize message queue with buffer andd buffer size
     while True:
         get message from thread 1
-        sleep for 1s
-        print "thread 2"
+        if(received message==true):
+            sleep for 1s
+            print "thread 2"
 
 // Create and spawn thread 1 
 // Create and spawn thread 2
