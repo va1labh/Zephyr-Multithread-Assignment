@@ -47,7 +47,7 @@ function thread2():
 # Output
 The native posix port of Zephyr is used to run the code present in `./build/zephyr/zephyr.exe`
 
-![Output](https://github.com/va1labh/ZephyrThreadEx/blob/main/output.png)
+![Output](output.png)
 
 
 
